@@ -3,7 +3,8 @@ const Note = require("../models/Note");
 const createNote = async (req, res) => {
     try {
         const note = await Note.create({
-            title: req.body.title
+            title: req.body.title,
+            user: req.user
         });
         console.log(note);
         res.json(note);
@@ -16,7 +17,9 @@ const createNote = async (req, res) => {
 
 const getNotes = async (req, res) => {
     try {
-        const notes = await Note.find();
+        const notes = await Note.find({
+            user: req.user
+        });
         console.log(notes);
         res.json(notes);
     } catch (err) {
@@ -28,7 +31,10 @@ const getNotes = async (req, res) => {
 
 const getNotesbyId = async (req, res) => {
     try {
-        const note = await Note.findById(req.params.id);
+        const note = await Note.findOne({
+            _id : req.params.id,
+            user : req.user
+        });
         if (!note) {
             return res.status(404).json({
                 message: "Note not found"
@@ -45,7 +51,10 @@ const getNotesbyId = async (req, res) => {
 
 const updateNote = async (req, res) => {
     try {
-        const note = await Note.findById(req.params.id);
+        const note = await Note.findOne({
+            _id : req.params.id,
+            user : req.user
+        })
 
         if (!note) {
             return res.status(404).json({
@@ -68,7 +77,10 @@ const updateNote = async (req, res) => {
 
 const deleteNote = async (req, res) => {
     try {
-        const note = await Note.findById(req.params.id);
+        const note = await Note.findOne({
+            _id :req.params.id,
+            user :req.user
+        });
 
         if (!note) {
             return res.status(404).json({
@@ -94,4 +106,4 @@ module.exports = ({
     getNotesbyId,
     updateNote,
     deleteNote
-});
+});sta

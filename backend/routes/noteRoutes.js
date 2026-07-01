@@ -1,6 +1,7 @@
 const express = require("express");
 const router = require("express").Router();
 const Note = require("../models/Note");
+const protect = require("../middleware/authMiddleware");
 const { createNote,getNotes,getNotesbyId,updateNote,deleteNote } = require("../controllers/noteController");
 
 // router.post("/", async (req, res) => {
@@ -31,7 +32,7 @@ router.post("/", createNote);
 //     }
 // });
 
-router.get("/",getNotes);
+router.get("/",protect,getNotes);
 
 // router.get("/:id", async (req, res) => {
 //     try {
