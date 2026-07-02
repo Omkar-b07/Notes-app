@@ -4,6 +4,7 @@ const createNote = async (req, res) => {
     try {
         const note = await Note.create({
             title: req.body.title,
+            description:req.body.description,
             user: req.user
         });
         console.log(note);
@@ -19,7 +20,8 @@ const getNotes = async (req, res) => {
     try {
         const notes = await Note.find({
             user: req.user
-        });
+        }).populate("user","name email");
+
         console.log(notes);
         res.json(notes);
     } catch (err) {
@@ -106,4 +108,4 @@ module.exports = ({
     getNotesbyId,
     updateNote,
     deleteNote
-});sta
+});
