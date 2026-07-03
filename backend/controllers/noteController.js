@@ -1,11 +1,10 @@
 const Note = require("../models/Note");
-const { search } = require("../routes/noteRoutes");
-
 const createNote = async (req, res) => {
     try {
+        console.log("req.user =", req.user);
         const note = await Note.create({
             title: req.body.title,
-            description:req.body.description,
+            description: req.body.description,
             user: req.user
         });
         console.log(note);
@@ -19,14 +18,22 @@ const createNote = async (req, res) => {
 
 const getNotes = async (req, res) => {
     try {
-        const notes = await Note.find({
-            user: req.user,
-            title:{
-                $regex:search,
-                $options:"i"
-            }
-        }).populate("user","name email");
-
+        const search = req.query.search;
+        let notes;
+        if (search) {
+                notes = await Note.find({
+                user: req.user,
+                title: {
+                    $regex: search,
+                    $options: "i"
+                }
+            }).populate("user", "name email");
+        }
+        else{
+            notes = await Note.find({
+                user : req.user
+            }).populate("user","name email")
+        }
         console.log(notes);
         res.json(notes);
     } catch (err) {
@@ -39,8 +46,8 @@ const getNotes = async (req, res) => {
 const getNotesbyId = async (req, res) => {
     try {
         const note = await Note.findOne({
-            _id : req.params.id,
-            user : req.user
+            _id: req.params.id,
+            user: req.user
         });
         if (!note) {
             return res.status(404).json({
@@ -59,8 +66,8 @@ const getNotesbyId = async (req, res) => {
 const updateNote = async (req, res) => {
     try {
         const note = await Note.findOne({
-            _id : req.params.id,
-            user : req.user
+            _id: req.params.id,
+            user: req.user
         })
 
         if (!note) {
@@ -72,7 +79,8 @@ const updateNote = async (req, res) => {
         note.title = req.body.title;
         note.description = req.body.description;
         note.completed = req.body.completed;
-        
+        note.pinned = req.body.pinned;
+
         await note.save();
         console.log(note);
         res.json(note);
@@ -87,8 +95,8 @@ const updateNote = async (req, res) => {
 const deleteNote = async (req, res) => {
     try {
         const note = await Note.findOne({
-            _id :req.params.id,
-            user :req.user
+            _id: req.params.id,
+            user: req.user
         });
 
         if (!note) {

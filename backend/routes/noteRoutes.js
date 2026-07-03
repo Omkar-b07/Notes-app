@@ -18,7 +18,7 @@ const { createNote,getNotes,getNotesbyId,updateNote,deleteNote } = require("../c
     // }
 // });
 
-router.post("/", createNote);
+router.post("/",protect,createNote);
 
 // router.get("/", async (req, res) => {
 //     try {
