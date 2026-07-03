@@ -1,4 +1,5 @@
 const Note = require("../models/Note");
+const { search } = require("../routes/noteRoutes");
 
 const createNote = async (req, res) => {
     try {
@@ -19,7 +20,11 @@ const createNote = async (req, res) => {
 const getNotes = async (req, res) => {
     try {
         const notes = await Note.find({
-            user: req.user
+            user: req.user,
+            title:{
+                $regex:search,
+                $options:"i"
+            }
         }).populate("user","name email");
 
         console.log(notes);
@@ -65,7 +70,9 @@ const updateNote = async (req, res) => {
         }
 
         note.title = req.body.title;
-
+        note.description = req.body.description;
+        note.completed = req.body.completed;
+        
         await note.save();
         console.log(note);
         res.json(note);
