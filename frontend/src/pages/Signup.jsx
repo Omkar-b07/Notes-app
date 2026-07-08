@@ -5,11 +5,16 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    function handleSignup() {
-        axios.post(
-            "http://localhost:5000/api/auth/signUp",
-            { name, email, password }
-        );
+    async function handleSignup() {
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/api/auth/signUp",
+                { name, email, password }
+            );
+        } catch (err) {
+
+        }
+
     }
 
     return (
